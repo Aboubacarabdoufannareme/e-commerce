@@ -1,0 +1,16 @@
+# Local DB credentials — NEVER commit
+core/db_cred.php
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+error/error.log
+
+# Ignore uploaded images but keep the folders
+images/products/*
+images/customers/*
+!images/products/.gitkeep
+!images/customers/.gitkeep
