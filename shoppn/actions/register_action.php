@@ -1,4 +1,5 @@
 <?php
+
 /**
  * actions/register_action.php — Action
  * Handles the register form POST. Validates, calls Controller, redirects.
@@ -9,7 +10,7 @@ require_once __DIR__ . '/../controllers/CustomerController.php';
 
 // 1. POST only
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('../views/register.php');
+    redirect(BASE_URL . '/views/register.php');
 }
 
 // 2. Sanitize
@@ -48,7 +49,7 @@ if (!preg_match('/^[0-9+\-\s]{7,15}$/', $contact)) {
 
 if (!empty($errors)) {
     $_SESSION['error'] = implode(' ', $errors);
-    redirect('../views/register.php');
+    redirect(BASE_URL . '/views/register.php');
 }
 
 // 4. Call the controller
@@ -66,14 +67,13 @@ $result = $controller->register([
 if ($result['success']) {
     $_SESSION['customer_id']   = $result['customer_id'];
     $_SESSION['customer_name'] = $name;
-    $_SESSION['customer_email']= $email;
+    $_SESSION['customer_email'] = $email;
     $_SESSION['user_role']     = 2;  // customer
 
     $_SESSION['success'] = 'Account created. Welcome!';
-    redirect('../views/account/my_account.php');
+    redirect(BASE_URL . '/views/account/my_account.php');
 }
 
 // Failure
 $_SESSION['error'] = $result['error'] ?? 'Registration failed.';
-redirect('../views/register.php');
-?>
+redirect(BASE_URL . '/views/register.php');

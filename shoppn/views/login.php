@@ -7,14 +7,16 @@ require_once __DIR__ . '/layout/header.php';
     <h1>Login</h1>
 
     <?php if (!empty($_SESSION['error'])): ?>
-        <p class="form-error"><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></p>
+        <p class="form-error"><?php echo htmlspecialchars($_SESSION['error']);
+                                unset($_SESSION['error']); ?></p>
     <?php endif; ?>
 
     <?php if (!empty($_SESSION['success'])): ?>
-        <p class="form-success"><?php echo htmlspecialchars($_SESSION['success']); unset($_SESSION['success']); ?></p>
+        <p class="form-success"><?php echo htmlspecialchars($_SESSION['success']);
+                                unset($_SESSION['success']); ?></p>
     <?php endif; ?>
 
-    <form id="login-form" action="../actions/login_action.php" method="POST" novalidate>
+    <form id="login-form" action="<?php echo BASE_URL; ?>/actions/login_action.php" method="POST" novalidate>
         <p>
             <label>Email<br>
                 <input type="email" name="customer_email" id="login_email" required>
@@ -34,7 +36,7 @@ require_once __DIR__ . '/layout/header.php';
         </p>
     </form>
 
-    <p>Don't have an account? <a href="register.php">Register here</a>.</p>
+    <p>Don't have an account? <a href="<?php echo BASE_URL; ?>/views/register.php">Register here</a>.</p>
 </main>
 
 <?php require_once __DIR__ . '/layout/footer.php'; ?>

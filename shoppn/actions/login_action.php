@@ -1,4 +1,5 @@
 <?php
+
 /**
  * actions/login_action.php — Action
  * POST-only. Sanitizes inputs, calls controller, sets session, redirects.
@@ -8,7 +9,7 @@ require_once __DIR__ . '/../controllers/CustomerController.php';
 
 // 1. POST only
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    redirect('../views/login.php');
+    redirect(BASE_URL . '/views/login.php');
 }
 
 // 2. Sanitize
@@ -26,7 +27,7 @@ if ($pass === '') {
 
 if (!empty($errors)) {
     $_SESSION['error'] = implode(' ', $errors);
-    redirect('../views/login.php');
+    redirect(BASE_URL . '/views/login.php');
 }
 
 // 4. Call the controller
@@ -46,13 +47,12 @@ if ($result['success']) {
 
     // Admins land on the admin dashboard; customers on home.
     if ((int)$c['user_role'] === 1) {
-        redirect('../views/admin/product.php');
+        redirect(BASE_URL . '/views/admin/product.php');
     } else {
-        redirect('../index.php');
+        redirect(BASE_URL . '/index.php');
     }
 }
 
 // Failure
 $_SESSION['error'] = $result['error'] ?? 'Login failed.';
-redirect('../views/login.php');
-?>
+redirect(BASE_URL . '/views/login.php');

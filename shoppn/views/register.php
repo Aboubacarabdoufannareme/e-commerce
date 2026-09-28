@@ -7,10 +7,11 @@ require_once __DIR__ . '/layout/header.php';
     <h1>Create an Account</h1>
 
     <?php if (!empty($_SESSION['error'])): ?>
-        <p class="form-error"><?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></p>
+        <p class="form-error"><?php echo htmlspecialchars($_SESSION['error']);
+                                unset($_SESSION['error']); ?></p>
     <?php endif; ?>
 
-    <form id="register-form" action="../actions/register_action.php" method="POST" novalidate>
+    <form id="register-form" action="<?php echo BASE_URL; ?>/actions/register_action.php" method="POST" novalidate>
         <p>
             <label>Full Name<br>
                 <input type="text" name="customer_name" id="customer_name" required>
@@ -67,7 +68,7 @@ require_once __DIR__ . '/layout/header.php';
         </p>
     </form>
 
-    <p>Already have an account? <a href="login.php">Login here</a>.</p>
+    <p>Already have an account? <a href="<?php echo BASE_URL; ?>/views/login.php">Login here</a>.</p>
 </main>
 
 <?php require_once __DIR__ . '/layout/footer.php'; ?>

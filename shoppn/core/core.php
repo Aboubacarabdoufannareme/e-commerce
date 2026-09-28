@@ -1,4 +1,5 @@
 <?php
+
 /**
  * core/core.php
  * Included on every page. Bootstraps session, config, and shared helpers.
@@ -14,8 +15,17 @@ if (session_status() === PHP_SESSION_NONE) {
 date_default_timezone_set('Africa/Accra');
 // Base URL path for this app (used for absolute redirects).
 // If you ever rename the folder or deploy elsewhere, change this ONE line.
+// Base URL path for this app (used for absolute redirects and asset links).
+// Auto-detects local (XAMPP) vs live (school server).
 if (!defined('BASE_URL')) {
-    define('BASE_URL', '/shoppn');
+    $host = $_SERVER['HTTP_HOST'] ?? '';
+    $is_local = (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false);
+
+    if ($is_local) {
+        define('BASE_URL', '/shoppn');
+    } else {
+        define('BASE_URL', '/~fannareme.abdou/e-commerce/shoppn');
+    }
 }
 
 // ---- Base DB class ----
@@ -83,4 +93,3 @@ function require_admin()
         redirect(BASE_URL . '/index.php');
     }
 }
-?>
