@@ -27,7 +27,7 @@ require_once __DIR__ . '/layout/header.php';
         </p>
 
         <p>
-            <label>Password <small>(min 8 chars, at least one digit)</small><br>
+            <label>Password <small>(8–72 chars: uppercase, lowercase, digit, and special char; no spaces)</small><br>
                 <input type="password" name="customer_pass" id="customer_pass" required>
                 <span class="field-error" id="err-pass"></span>
             </label>

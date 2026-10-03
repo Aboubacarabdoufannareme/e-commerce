@@ -34,8 +34,8 @@ if (strlen($email) > 100) {
     // customer_email is VARCHAR(100) in the schema
     $errors[] = 'Email is too long (max 100 characters).';
 }
-if (strlen($pass) < 8 || !preg_match('/\d/', $pass)) {
-    $errors[] = 'Password must be at least 8 characters and contain a digit.';
+if (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,72}$/', $pass)) {
+    $errors[] = 'Password needs 8–72 chars with uppercase, lowercase, a digit, and a special character, and no spaces.';
 }
 if ($country === '') {
     $errors[] = 'Please select a country.';

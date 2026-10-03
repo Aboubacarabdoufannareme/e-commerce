@@ -8,7 +8,7 @@
 
   var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   var phoneRegex = /^[0-9+\-\s]{7,15}$/;
-  var passRegex  = /^(?=.*\d).{8,}$/;
+  var passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])\S{8,72}$/;
 
   function showError(fieldId, msg) {
     var el = document.getElementById('err-' + fieldId);
@@ -21,30 +21,30 @@
     regForm.addEventListener('submit', function (e) {
       var ok = true;
 
-      var name    = document.getElementById('customer_name').value.trim();
-      var email   = document.getElementById('customer_email').value.trim();
-      var pass    = document.getElementById('customer_pass').value;
+      var name = document.getElementById('customer_name').value.trim();
+      var email = document.getElementById('customer_email').value.trim();
+      var pass = document.getElementById('customer_pass').value;
       var country = document.getElementById('customer_country').value;
-      var city    = document.getElementById('customer_city').value.trim();
+      var city = document.getElementById('customer_city').value.trim();
       var contact = document.getElementById('customer_contact').value.trim();
 
-      if (name.length < 2)               { showError('name', 'Name is too short.'); ok = false; }
-      else                               { showError('name', ''); }
+      if (name.length < 2) { showError('name', 'Name is too short.'); ok = false; }
+      else { showError('name', ''); }
 
-      if (!emailRegex.test(email))       { showError('email', 'Invalid email address.'); ok = false; }
-      else                               { showError('email', ''); }
+      if (!emailRegex.test(email)) { showError('email', 'Invalid email address.'); ok = false; }
+      else { showError('email', ''); }
 
-      if (!passRegex.test(pass))         { showError('pass', 'Min 8 characters, at least one digit.'); ok = false; }
-      else                               { showError('pass', ''); }
+      if (!passRegex.test(pass)) { showError('pass', 'Min 8 characters, at least one uppercase letter, one lowercase letter, one digit, and one special character.'); ok = false; }
+      else { showError('pass', ''); }
 
-      if (country === '')                { showError('country', 'Please select a country.'); ok = false; }
-      else                               { showError('country', ''); }
+      if (country === '') { showError('country', 'Please select a country.'); ok = false; }
+      else { showError('country', ''); }
 
-      if (city === '')                   { showError('city', 'City is required.'); ok = false; }
-      else                               { showError('city', ''); }
+      if (city === '') { showError('city', 'City is required.'); ok = false; }
+      else { showError('city', ''); }
 
-      if (!phoneRegex.test(contact))     { showError('contact', 'Contact must be 7–15 digits.'); ok = false; }
-      else                               { showError('contact', ''); }
+      if (!phoneRegex.test(contact)) { showError('contact', 'Contact must be 7–15 digits.'); ok = false; }
+      else { showError('contact', ''); }
 
       if (!ok) {
         e.preventDefault();
@@ -62,13 +62,13 @@
       var ok = true;
 
       var email = document.getElementById('login_email').value.trim();
-      var pass  = document.getElementById('login_pass').value;
+      var pass = document.getElementById('login_pass').value;
 
-      if (!emailRegex.test(email))       { showError('login_email', 'Invalid email address.'); ok = false; }
-      else                               { showError('login_email', ''); }
+      if (!emailRegex.test(email)) { showError('login_email', 'Invalid email address.'); ok = false; }
+      else { showError('login_email', ''); }
 
-      if (pass.length === 0)             { showError('login_pass', 'Password is required.'); ok = false; }
-      else                               { showError('login_pass', ''); }
+      if (pass.length === 0) { showError('login_pass', 'Password is required.'); ok = false; }
+      else { showError('login_pass', ''); }
 
       if (!ok) {
         e.preventDefault();
