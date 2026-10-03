@@ -47,7 +47,7 @@ if ($result['success']) {
 
     // Admins land on the admin dashboard; customers on home.
     if ((int)$c['user_role'] === 1) {
-        redirect(BASE_URL . '/views/admin/product.php');
+        redirect(BASE_URL . '/views/admin/brand.php');
     } else {
         redirect(BASE_URL . '/index.php');
     }
