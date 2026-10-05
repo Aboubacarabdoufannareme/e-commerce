@@ -98,5 +98,49 @@ class ProductClass extends Database
         $stmt->close();
         return $ok;
     }
+    // ───────────── CATEGORIES (Task 7 & 8) ─────────────
+
+    /**
+     * Insert a new category.
+     * @return int|false  new cat_id on success, false on failure
+     */
+    public function addCategory($name)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO categories (cat_name) VALUES (?)"
+        );
+        if (!$stmt) {
+            error_log('addCategory prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('s', $name);
+
+        if (!$stmt->execute()) {
+            error_log('addCategory execute failed: ' . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+        $id = $stmt->insert_id;
+        $stmt->close();
+        return $id;
+    }
+
+    /**
+     * Return all categories, ordered alphabetically.
+     * @return array  list of ['cat_id' => int, 'cat_name' => string]
+     */
+    public function getAllCategories()
+    {
+        $rows = [];
+        $result = $this->conn->query("SELECT cat_id, cat_name FROM categories ORDER BY cat_name ASC");
+        if (!$result) {
+            error_log('getAllCategories failed: ' . $this->conn->error);
+            return $rows;
+        }
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
 }
 ?>

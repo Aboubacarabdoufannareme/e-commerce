@@ -88,5 +88,36 @@ class ProductController
         }
         return ['success' => true];
     }
+    // ───────────── CATEGORIES ─────────────
+
+    /**
+     * @return array ['success' => true, 'cat_id' => int]
+     *             | ['success' => false, 'error' => string]
+     */
+    public function addCategory($name)
+    {
+        $name = trim($name);
+
+        if ($name === '') {
+            return ['success' => false, 'error' => 'Category name is required.'];
+        }
+        if (strlen($name) > 100) {
+            return ['success' => false, 'error' => 'Category name is too long (max 100 characters).'];
+        }
+
+        $id = $this->product->addCategory($name);
+        if ($id === false) {
+            return ['success' => false, 'error' => 'Could not add category. Try again.'];
+        }
+        return ['success' => true, 'cat_id' => $id];
+    }
+
+    /**
+     * @return array  list of categories
+     */
+    public function getAllCategories()
+    {
+        return $this->product->getAllCategories();
+    }
 }
 ?>
