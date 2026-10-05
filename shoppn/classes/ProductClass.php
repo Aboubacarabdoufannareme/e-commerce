@@ -53,5 +53,50 @@ class ProductClass extends Database
         }
         return $rows;
     }
+    /**
+     * Fetch a single brand by ID.
+     * @return array|false  ['brand_id' => int, 'brand_name' => string] or false
+     */
+    public function getBrandById($id)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT brand_id, brand_name FROM brands WHERE brand_id = ? LIMIT 1"
+        );
+        if (!$stmt) {
+            error_log('getBrandById prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res ? $res->fetch_assoc() : false;
+        $stmt->close();
+        return $row;
+    }
+
+    /**
+     * Update a brand's name.
+     * @return bool  true on success, false on failure
+     */
+    public function updateBrand($id, $name)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE brands SET brand_name = ? WHERE brand_id = ?"
+        );
+        if (!$stmt) {
+            error_log('updateBrand prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('si', $name, $id);
+
+        if (!$stmt->execute()) {
+            error_log('updateBrand execute failed: ' . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+        $ok = $stmt->affected_rows >= 0; // 0 means "same value", not an error
+        $stmt->close();
+        return $ok;
+    }
 }
 ?>
