@@ -119,5 +119,45 @@ class ProductController
     {
         return $this->product->getAllCategories();
     }
+    /**
+     * @return array|false  category row or false
+     */
+    public function getCategoryById($id)
+    {
+        if (!is_numeric($id) || (int)$id <= 0) {
+            return false;
+        }
+        return $this->product->getCategoryById((int)$id);
+    }
+
+    /**
+     * @return array ['success' => true]
+     *             | ['success' => false, 'error' => string]
+     */
+    public function updateCategory($id, $name)
+    {
+        if (!is_numeric($id) || (int)$id <= 0) {
+            return ['success' => false, 'error' => 'Invalid category ID.'];
+        }
+
+        $name = trim($name);
+        if ($name === '') {
+            return ['success' => false, 'error' => 'Category name is required.'];
+        }
+        if (strlen($name) > 100) {
+            return ['success' => false, 'error' => 'Category name is too long (max 100 characters).'];
+        }
+
+        $existing = $this->product->getCategoryById((int)$id);
+        if (!$existing) {
+            return ['success' => false, 'error' => 'Category not found.'];
+        }
+
+        $ok = $this->product->updateCategory((int)$id, $name);
+        if (!$ok) {
+            return ['success' => false, 'error' => 'Could not update category.'];
+        }
+        return ['success' => true];
+    }
 }
 ?>

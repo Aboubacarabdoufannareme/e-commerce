@@ -142,5 +142,50 @@ class ProductClass extends Database
         }
         return $rows;
     }
+    /**
+     * Fetch a single category by ID.
+     * @return array|false  ['cat_id' => int, 'cat_name' => string] or false
+     */
+    public function getCategoryById($id)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT cat_id, cat_name FROM categories WHERE cat_id = ? LIMIT 1"
+        );
+        if (!$stmt) {
+            error_log('getCategoryById prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res ? $res->fetch_assoc() : false;
+        $stmt->close();
+        return $row;
+    }
+
+    /**
+     * Update a category's name.
+     * @return bool  true on success, false on failure
+     */
+    public function updateCategory($id, $name)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE categories SET cat_name = ? WHERE cat_id = ?"
+        );
+        if (!$stmt) {
+            error_log('updateCategory prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('si', $name, $id);
+
+        if (!$stmt->execute()) {
+            error_log('updateCategory execute failed: ' . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+        $ok = $stmt->affected_rows >= 0;
+        $stmt->close();
+        return $ok;
+    }
 }
 ?>
