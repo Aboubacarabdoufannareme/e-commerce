@@ -159,5 +159,115 @@ class ProductController
         }
         return ['success' => true];
     }
+    // ───────────── PRODUCTS ─────────────
+
+    /**
+     * Validate product fields (shared by add and update).
+     * @return array  ['ok' => bool, 'errors' => string[]]
+     */
+    private function validateProduct($data)
+    {
+        $errors = [];
+
+        $title = trim($data['title'] ?? '');
+        if ($title === '') {
+            $errors[] = 'Product title is required.';
+        }
+        if (strlen($title) > 200) {
+            $errors[] = 'Product title is too long (max 200 chars).';
+        }
+
+        $price = $data['price'] ?? '';
+        if (!is_numeric($price) || (float)$price < 0) {
+            $errors[] = 'Price must be a non-negative number.';
+        }
+
+        $cat = $data['cat'] ?? '';
+        if (!is_numeric($cat) || (int)$cat <= 0) {
+            $errors[] = 'Please choose a category.';
+        }
+
+        $brand = $data['brand'] ?? '';
+        if (!is_numeric($brand) || (int)$brand <= 0) {
+            $errors[] = 'Please choose a brand.';
+        }
+
+        return ['ok' => empty($errors), 'errors' => $errors];
+    }
+
+    /**
+     * @return array ['success' => true, 'product_id' => int]
+     *             | ['success' => false, 'error' => string]
+     */
+    public function addProduct($data)
+    {
+        $v = $this->validateProduct($data);
+        if (!$v['ok']) {
+            return ['success' => false, 'error' => implode(' ', $v['errors'])];
+        }
+
+        $id = $this->product->addProduct(
+            (int)$data['cat'],
+            (int)$data['brand'],
+            trim($data['title']),
+            (float)$data['price'],
+            $data['desc']     ?? '',
+            $data['image']    ?? '',
+            $data['keywords'] ?? ''
+        );
+
+        if ($id === false) {
+            return ['success' => false, 'error' => 'Could not add product.'];
+        }
+        return ['success' => true, 'product_id' => $id];
+    }
+
+    /**
+     * @return array ['success' => true]
+     *             | ['success' => false, 'error' => string]
+     */
+    public function updateProduct($id, $data)
+    {
+        if (!is_numeric($id) || (int)$id <= 0) {
+            return ['success' => false, 'error' => 'Invalid product ID.'];
+        }
+
+        $v = $this->validateProduct($data);
+        if (!$v['ok']) {
+            return ['success' => false, 'error' => implode(' ', $v['errors'])];
+        }
+
+        $existing = $this->product->getProductById((int)$id);
+        if (!$existing) {
+            return ['success' => false, 'error' => 'Product not found.'];
+        }
+
+        $ok = $this->product->updateProduct(
+            (int)$id,
+            (int)$data['cat'],
+            (int)$data['brand'],
+            trim($data['title']),
+            (float)$data['price'],
+            $data['desc']     ?? '',
+            $data['image']    ?? $existing['product_image'],
+            $data['keywords'] ?? ''
+        );
+
+        if (!$ok) {
+            return ['success' => false, 'error' => 'Could not update product.'];
+        }
+        return ['success' => true];
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getProductById($id)
+    {
+        if (!is_numeric($id) || (int)$id <= 0) {
+            return false;
+        }
+        return $this->product->getProductById((int)$id);
+    }
 }
 ?>

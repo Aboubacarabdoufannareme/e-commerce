@@ -187,5 +187,97 @@ class ProductClass extends Database
         $stmt->close();
         return $ok;
     }
+    // ───────────── PRODUCTS (Task 9) ─────────────
+
+    /**
+     * Insert a new product.
+     * @return int|false  new product_id on success, false on failure
+     */
+    public function addProduct($cat, $brand, $title, $price, $desc, $image, $keywords)
+    {
+        $stmt = $this->conn->prepare(
+            "INSERT INTO products
+                (product_cat, product_brand, product_title, product_price,
+                 product_desc, product_image, product_keywords)
+             VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+        if (!$stmt) {
+            error_log('addProduct prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param(
+            'iisdsss',
+            $cat, $brand, $title, $price, $desc, $image, $keywords
+        );
+
+        if (!$stmt->execute()) {
+            error_log('addProduct execute failed: ' . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+        $id = $stmt->insert_id;
+        $stmt->close();
+        return $id;
+    }
+
+    /**
+     * Update an existing product.
+     * @return bool
+     */
+    public function updateProduct($id, $cat, $brand, $title, $price, $desc, $image, $keywords)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE products SET
+                product_cat = ?, product_brand = ?, product_title = ?,
+                product_price = ?, product_desc = ?, product_image = ?,
+                product_keywords = ?
+             WHERE product_id = ?"
+        );
+        if (!$stmt) {
+            error_log('updateProduct prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param(
+            'iisdsssi',
+            $cat, $brand, $title, $price, $desc, $image, $keywords, $id
+        );
+
+        if (!$stmt->execute()) {
+            error_log('updateProduct execute failed: ' . $stmt->error);
+            $stmt->close();
+            return false;
+        }
+        $ok = $stmt->affected_rows >= 0;
+        $stmt->close();
+        return $ok;
+    }
+
+    /**
+     * Fetch one product with its category + brand names joined in.
+     * @return array|false
+     */
+    public function getProductById($id)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT p.*,
+                    c.cat_name   AS category_name,
+                    b.brand_name AS brand_name
+             FROM products p
+             LEFT JOIN categories c ON p.product_cat   = c.cat_id
+             LEFT JOIN brands     b ON p.product_brand = b.brand_id
+             WHERE p.product_id = ?
+             LIMIT 1"
+        );
+        if (!$stmt) {
+            error_log('getProductById prepare failed: ' . $this->conn->error);
+            return false;
+        }
+        $stmt->bind_param('i', $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res ? $res->fetch_assoc() : false;
+        $stmt->close();
+        return $row;
+    }
 }
 ?>
