@@ -279,5 +279,30 @@ class ProductClass extends Database
         $stmt->close();
         return $row;
     }
+    /**
+     * Return all products with category + brand names, newest first.
+     * @return array
+     */
+    public function getAllProducts()
+    {
+        $rows = [];
+        $sql = "SELECT p.product_id, p.product_title, p.product_price, p.product_image,
+                       p.product_cat, p.product_brand,
+                       c.cat_name AS category_name,
+                       b.brand_name AS brand_name
+                FROM products p
+                LEFT JOIN categories c ON p.product_cat   = c.cat_id
+                LEFT JOIN brands     b ON p.product_brand = b.brand_id
+                ORDER BY p.product_id DESC";
+        $result = $this->conn->query($sql);
+        if (!$result) {
+            error_log('getAllProducts failed: ' . $this->conn->error);
+            return $rows;
+        }
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
 }
 ?>

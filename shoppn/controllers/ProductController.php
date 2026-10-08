@@ -269,5 +269,12 @@ class ProductController
         }
         return $this->product->getProductById((int)$id);
     }
+    /**
+     * @return array
+     */
+    public function getAllProducts()
+    {
+        return $this->product->getAllProducts();
+    }
 }
 ?>

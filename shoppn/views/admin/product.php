@@ -13,6 +13,7 @@ $controller = new ProductController();
 // Dropdowns data
 $categories = $controller->getAllCategories();
 $brands     = $controller->getAllBrands();
+$products   = $controller->getAllProducts();
 
 // Edit mode?
 $edit_id  = $_GET['edit_id'] ?? null;
@@ -126,9 +127,46 @@ require_once __DIR__ . '/../layout/header.php';
         </p>
     </form>
 
-    <p style="margin-top:2rem;">
-        <em>Product list will be added in a later task.</em>
-    </p>
+        <h2 style="margin-top:2rem;">Existing Products</h2>
+    <?php if (empty($products)): ?>
+        <p><em>No products yet. Add the first one above.</em></p>
+    <?php else: ?>
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Title</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th>Brand</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($products as $p): ?>
+                    <tr>
+                        <td><?php echo (int)$p['product_id']; ?></td>
+                        <td>
+                            <?php if (!empty($p['product_image'])): ?>
+                                <img src="<?php echo BASE_URL; ?>/images/products/<?php echo htmlspecialchars($p['product_image']); ?>"
+                                     alt="" style="max-width:60px;max-height:60px;">
+                            <?php else: ?>
+                                <em>—</em>
+                            <?php endif; ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($p['product_title']); ?></td>
+                        <td><?php echo htmlspecialchars($p['product_price']); ?></td>
+                        <td><?php echo htmlspecialchars($p['category_name'] ?? '—'); ?></td>
+                        <td><?php echo htmlspecialchars($p['brand_name'] ?? '—'); ?></td>
+                        <td>
+                            <a href="<?php echo BASE_URL; ?>/views/admin/product.php?edit_id=<?php echo (int)$p['product_id']; ?>">Edit</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </main>
 
 <?php require_once __DIR__ . '/../layout/footer.php'; ?>
