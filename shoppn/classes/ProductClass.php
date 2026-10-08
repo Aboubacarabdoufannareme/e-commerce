@@ -304,5 +304,112 @@ class ProductClass extends Database
         }
         return $rows;
     }
+    // ───────────── PRODUCT DISPLAY (Task 10) ─────────────
+
+    /**
+     * Random selection for the home page.
+     * @return array
+     */
+    public function getFeaturedProducts($limit = 6)
+    {
+        $rows = [];
+        $limit = (int)$limit;
+        if ($limit < 1) $limit = 6;
+
+        $sql = "SELECT product_id, product_title, product_price, product_image
+                FROM products
+                ORDER BY RAND()
+                LIMIT $limit";
+        $result = $this->conn->query($sql);
+        if (!$result) {
+            error_log('getFeaturedProducts failed: ' . $this->conn->error);
+            return $rows;
+        }
+        while ($row = $result->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        return $rows;
+    }
+
+    /**
+     * Products in a given category.
+     * @return array
+     */
+    public function getProductsByCategory($cat_id)
+    {
+        $rows = [];
+        $stmt = $this->conn->prepare(
+            "SELECT product_id, product_title, product_price, product_image
+             FROM products WHERE product_cat = ?
+             ORDER BY product_title ASC"
+        );
+        if (!$stmt) {
+            error_log('getProductsByCategory prepare failed: ' . $this->conn->error);
+            return $rows;
+        }
+        $stmt->bind_param('i', $cat_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
+        return $rows;
+    }
+
+    /**
+     * Products from a given brand.
+     * @return array
+     */
+    public function getProductsByBrand($brand_id)
+    {
+        $rows = [];
+        $stmt = $this->conn->prepare(
+            "SELECT product_id, product_title, product_price, product_image
+             FROM products WHERE product_brand = ?
+             ORDER BY product_title ASC"
+        );
+        if (!$stmt) {
+            error_log('getProductsByBrand prepare failed: ' . $this->conn->error);
+            return $rows;
+        }
+        $stmt->bind_param('i', $brand_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
+        return $rows;
+    }
+
+    /**
+     * Search products by title OR keywords (LIKE).
+     * @return array
+     */
+    public function searchProducts($query)
+    {
+        $rows = [];
+        $needle = '%' . $query . '%';
+
+        $stmt = $this->conn->prepare(
+            "SELECT product_id, product_title, product_price, product_image
+             FROM products
+             WHERE product_title LIKE ? OR product_keywords LIKE ?
+             ORDER BY product_title ASC"
+        );
+        if (!$stmt) {
+            error_log('searchProducts prepare failed: ' . $this->conn->error);
+            return $rows;
+        }
+        $stmt->bind_param('ss', $needle, $needle);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        while ($row = $res->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        $stmt->close();
+        return $rows;
+    }
 }
 ?>

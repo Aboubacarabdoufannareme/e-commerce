@@ -276,5 +276,36 @@ class ProductController
     {
         return $this->product->getAllProducts();
     }
+    // ───────────── PRODUCT DISPLAY (Task 10) ─────────────
+
+    public function getFeaturedProducts($limit = 6)
+    {
+        return $this->product->getFeaturedProducts($limit);
+    }
+
+    public function getProductsByCategory($cat_id)
+    {
+        if (!is_numeric($cat_id) || (int)$cat_id <= 0) {
+            return [];
+        }
+        return $this->product->getProductsByCategory((int)$cat_id);
+    }
+
+    public function getProductsByBrand($brand_id)
+    {
+        if (!is_numeric($brand_id) || (int)$brand_id <= 0) {
+            return [];
+        }
+        return $this->product->getProductsByBrand((int)$brand_id);
+    }
+
+    public function searchProducts($query)
+    {
+        $query = trim($query);
+        if ($query === '') {
+            return [];
+        }
+        return $this->product->searchProducts($query);
+    }
 }
 ?>
