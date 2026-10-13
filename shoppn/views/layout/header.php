@@ -1,19 +1,31 @@
 <?php
 /**
  * views/layout/header.php
- * Shared page header: <head>, nav.
- * NO SQL here — only session-based nav logic.
+ * Shared header: <head>, nav, cart summary.
+ * NO SQL here — cart counts come from CartController.
  */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// BASE_URL is defined in core.php. If header.php is loaded without core.php,
-// fall back to a sensible default so the page still renders.
 if (!defined('BASE_URL')) {
     $host = $_SERVER['HTTP_HOST'] ?? '';
     $is_local = (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false);
     define('BASE_URL', $is_local ? '/shoppn' : '/~fannareme.abdou/e-commerce/shoppn');
+}
+
+// Cart summary — only if CartController is available
+$cart_count = 0;
+$cart_total = 0.0;
+if (function_exists('get_ip')) {
+    $ctrl_file = __DIR__ . '/../../controllers/CartController.php';
+    if (file_exists($ctrl_file)) {
+        require_once $ctrl_file;
+        $headerCart = new CartController();
+        $headerIp   = get_ip();
+        $cart_count = $headerCart->getCartCount($headerIp);
+        $cart_total = $headerCart->getCartTotal($headerIp);
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -57,6 +69,12 @@ if (!defined('BASE_URL')) {
                 <?php endif; ?>
             </ul>
         </nav>
+
+        <a class="cart-summary" href="<?php echo BASE_URL; ?>/views/cart.php">
+            🛒 Cart — <?php echo (int)$cart_count; ?> item<?php echo $cart_count === 1 ? '' : 's'; ?>
+            &nbsp;|&nbsp;
+            GHS <?php echo number_format($cart_total, 2); ?>
+        </a>
 
     </div>
 </header>

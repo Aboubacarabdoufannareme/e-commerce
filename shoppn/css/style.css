@@ -462,3 +462,93 @@ form button[type="submit"]:hover {
     .nav-wrap { gap: 0.75rem; }
     .search-form { max-width: none; }
 }
+/* ---------- Cart summary (header) ---------- */
+.cart-summary {
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    background: var(--yellow);
+    color: var(--olive) !important;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.cart-summary:hover {
+    background: var(--yellow-2);
+    text-decoration: none;
+    color: var(--olive) !important;
+}
+
+/* ---------- Cart table ---------- */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 1rem;
+}
+.cart-table th,
+.cart-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+    font-size: 0.92rem;
+}
+.cart-table th {
+    background: var(--olive);
+    color: var(--yellow);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-bottom: none;
+}
+.cart-table img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+}
+.cart-table .qty-input {
+    width: 60px;
+    padding: 0.35rem;
+    text-align: center;
+}
+.cart-subtotal {
+    font-weight: bold;
+    color: var(--olive);
+}
+
+.cart-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+.cart-actions a,
+.cart-actions button {
+    padding: 0.55rem 1rem;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 1px solid var(--olive);
+    background: #fff;
+    color: var(--olive);
+    cursor: pointer;
+}
+.cart-actions a.primary,
+.cart-actions button.primary {
+    background: var(--olive);
+    color: var(--yellow);
+}
+.cart-actions a.primary:hover,
+.cart-actions button.primary:hover {
+    background: var(--yellow);
+    color: var(--olive);
+}
